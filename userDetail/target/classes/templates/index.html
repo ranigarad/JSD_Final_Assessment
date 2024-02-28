@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot Form</title>
+</head>
+<body>
+
+    <form id="userForm">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required><br>
+
+        <label for="middleName">Middle Name:</label>
+        <input type="text" id="middleName" name="middleName" required><br>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required><br>
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <script>
+        function generatePassword(firstName, middleName, lastName) {
+            const firstChars = firstName.slice(0, 2);
+            const middleChars = middleName.slice(0, 2);
+            const lastChars = lastName.slice(0, 2);
+            const randomNumbers = Math.floor(Math.random() * 900) + 100;
+            return `${firstChars}${middleChars}${lastChars}${randomNumbers}`;
+        }
+
+        function submitForm() {
+            const firstName = document.getElementById('firstName').value;
+            const middleName = document.getElementById('middleName').value;
+            const lastName = document.getElementById('lastName').value;
+
+            const password = generatePassword(firstName, middleName, lastName);
+
+            const user = {
+                firstName: firstName,
+                middleName: middleName,
+                lastName: lastName,
+                password: password
+            };
+
+            // Make an HTTP request to your Spring Boot endpoint
+            fetch('/saveUser', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+
+</body>
+</html>
